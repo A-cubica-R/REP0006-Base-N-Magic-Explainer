@@ -81,14 +81,25 @@ If you don't have them, you can download them from these links:
 ## Running the Project
 
 1. **Download the Project**  
-   Place the project files in the folder:  
+   Place the project folder *Base-N Magic Explainer* in the folder:  
    `C:/MASM/masm611/BIN/`
 
-2. **Mount the Directory in DOS-Box**  
+2. **Mount the Directory in DOS-Box Terminal**  
    In the DOS-Box terminal, run the following command:  
 
    ```bash
    mount c: c:\MASM\masm611
+   ```
+
+3. **Compile and Run the project**  
+   In the DOS-Box terminal, run the following commands one by one:
+
+   ```bash
+   c:
+   cd MASM\masm611\BIN\Base-N Magic Explainer
+   ML converser_init.asm
+   converser_init.exe
+   ```  
 
 ---
 
