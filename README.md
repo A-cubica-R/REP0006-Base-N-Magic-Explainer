@@ -81,25 +81,34 @@ If you don't have them, you can download them from these links:
 ## Running the Project
 
 1. **Download the Project**  
-   Place the project folder *Base-N Magic Explainer* in the folder:  
+   Place the project folder _Base-N Magic Explainer_ in the folder:  
    `C:/MASM/masm611/BIN/`
 
 2. **Mount the Directory in DOS-Box Terminal**  
-   In the DOS-Box terminal, run the following command:  
+   In the DOS-Box terminal, run the following command:
 
    ```bash
-   mount c: c:\MASM\masm611
+   mount c: c:\MASM\masm611\BIN
    ```
 
-3. **Compile and Run the project**  
+3. **Look for your classes and folder names**
+   You need to verify the classpah name in the terminal of DOS-Box because may the names are not the same there, so:
+
+   1. Locate into the `C:` virtual disk with the command `C:`
+   2. With the _Base-N Magic Explainer_ folder located into `BIN`, try `dir` to see what's the name of the folder
+   3. With the `{folder_name}`, go to `{folder_name}\code` and use `dir` to see the name of the `converser_init.asm` file
+   4. Remember, the file to execute is 'converser_init.asm'.
+
+4. **Compile and Run the project**  
    In the DOS-Box terminal, run the following commands one by one:
 
    ```bash
-   c:
-   cd MASM\masm611\BIN\Base-N Magic Explainer
+   cd {folder_name}\code\{asm_file_name}
    ML converser_init.asm
    converser_init.exe
-   ```  
+   ```
+
+   where _folder_name_ is the folder name provided by DOS-Box terminal, and _asm_file_name_ is the file name provided by DOS-Box terminal.
 
 ---
 
