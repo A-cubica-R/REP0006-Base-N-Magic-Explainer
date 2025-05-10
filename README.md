@@ -83,7 +83,7 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Author
 
-Developed by [![LinkedIn](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/public-profile/settings?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_self_edit_contact-info%3B%2BsZaSk%2FlS8i%2BxArI%2FXc%2FyA%3D%3D) [![Outlook](https://img.shields.io/badge/Microsoft_Outlook-0078D4?style=for-the-badge&logo=microsoft-outlook&logoColor=white)](mailto:Adolfoalejandroarenasramos@outlook.com). Feel free to reach out for questions or suggestions!
+Developed by [![A-Cubica-R](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/public-profile/settings?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_self_edit_contact-info%3B%2BsZaSk%2FlS8i%2BxArI%2FXc%2FyA%3D%3D). Feel free to reach out for questions or suggestions!
 
 ---
 
