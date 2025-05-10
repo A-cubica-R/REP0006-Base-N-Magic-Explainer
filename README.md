@@ -7,16 +7,19 @@ An Assembly application that converts a Base-N number to another Base-N format, 
 ## Features
 
 This MASM-based program allows you to:
+
 1. **Select a source Base-N system.**
 2. **Input a number to evaluate.**
 3. **Choose a target Base-N system.**
 4. **Display a step-by-step explanation of the conversion process from one base to another.**
 
-### Additional Functionality:
+### Additional Functionality
+
 - At any step, the program allows you to return to **Step 1**.
 - At any step, the program allows you to return to the **previous step**.
 
-### Supported Bases:
+### Supported Bases
+
 - **Base-2** (Binary)
 - **Base-8** (Octal)
 - **Base-10** (Decimal)
@@ -41,37 +44,51 @@ This MASM-based program allows you to:
 
 ## How to Run
 
-1. Ensure you have MASM, DOS-Box and Emu8086 installed on your system.
-   1. if not, you can download from:
-      1. Emu8086 - https://www.mediafire.com/file/cmlywa0zjr6p5bj/emu-8086.rar/file
-      2. Dos-Box - https://www.dosbox.com/download.php?main=1
-      3. MASM611 - https://www.mediafire.com/file/qel4nxtcsg93n68/masm611.rar/file
-   2. Install Emu8086
-   3. Unzip MASM611 into the 'C:/MASM/masm611/' directory. You should see directories like 'BIN', 'LIB', 'HELP', etc...
-   4. Install DOS-Box
-   5. Open DOS-Box. In the terminal, DON'T CLOSE IT.
-2. Download the project and locate it into the 'c:\MASM\masm611\BIN\' folder.
-3. Mount the directory into the DOS-Box terminal
-```bash
-mount c: c:\\MASM\\masm611
-```
-4. In the terminal, write to navigate to the program directory:
-```bash
-c:
-cd BIN\\CODE\\Base-N Magic Explainer
-```
-6. In the terminal, write to compile the program:
-    ```bash
-    ml converser_init.asm
-    ```
-<!-- 7. Link the program:
-    ```bash
-    link /subsystem:console program.obj
-    ``` -->
-7. In the terminal, write to run the executable:
-    ```bash
-    converser_init.exe
-    ```
+### Prerequisites
+
+Make sure you have the following programs installed on your system:
+
+- **MASM**
+- **DOS-Box**
+- **Emu8086**
+
+If you don't have them, you can download them from these links:
+
+- [Download Emu8086](https://www.mediafire.com/file/cmlywa0zjr6p5bj/emu-8086.rar/file)
+- [Download DOS-Box](https://www.dosbox.com/download.php?main=1)
+- [Download MASM611](https://www.mediafire.com/file/qel4nxtcsg93n68/masm611.rar/file)
+
+---
+
+## Installation Steps
+
+1. **Install Emu8086**  
+   Follow the installation wizard to complete the setup.
+
+2. **Unzip MASM611**  
+   Extract the contents of the downloaded file into the directory:  
+   `C:/MASM/masm611/`  
+   Ensure that subdirectories like `BIN`, `LIB`, and `HELP` are present.
+
+3. **Install DOS-Box**  
+   Complete the installation by following the wizard.
+
+4. **Open DOS-Box**  
+   Launch DOS-Box. Keep the terminal open.
+
+---
+
+## Running the Project
+
+1. **Download the Project**  
+   Place the project files in the folder:  
+   `C:/MASM/masm611/BIN/`
+
+2. **Mount the Directory in DOS-Box**  
+   In the DOS-Box terminal, run the following command:  
+
+   ```bash
+   mount c: c:\MASM\masm611
 
 ---
 
@@ -83,7 +100,7 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Author
 
-Developed by [![A-Cubica-R](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/public-profile/settings?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_self_edit_contact-info%3B%2BsZaSk%2FlS8i%2BxArI%2FXc%2FyA%3D%3D). Feel free to reach out for questions or suggestions!
+Developed by [_A-Cubica-R_](https://www.linkedin.com/in/adolfo-alejandro-arenas-ramos/). Feel free to reach out for questions or suggestions!
 
 ---
 
