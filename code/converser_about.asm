@@ -3,6 +3,7 @@
 
 ; exportamos ShowAbout para que el linker lo encuentre
 PUBLIC ShowAbout
+EXTERN main:NEAR
 
 ; -------------------------------------------------------------------
 .DATA
@@ -14,8 +15,7 @@ PUBLIC ShowAbout
     ; -------------------------------------------------------------------
 
 .CODE
-    ; definimos ShowAbout como NEAR PROC y, al ser PUBLIC, no debe quedar
-    ; con nombre decorado
+
 ShowAbout PROC NEAR
     ; despeja pantalla
                 call ClearScreen
@@ -38,6 +38,10 @@ ShowAbout PROC NEAR
 
     ; limpia y regresa al menú
                 call ClearScreen
+
+    ; llama a la función principal de converser_init
+                call main
+
                 ret
 ShowAbout ENDP
 

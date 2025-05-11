@@ -3,6 +3,8 @@
 .stack 100h
 
 EXTERN ShowAbout:NEAR
+EXTERN SelectBase:NEAR
+PUBLIC main
 
 .data
 
@@ -215,10 +217,8 @@ CheckKey PROC
                   call ShowAbout
 
     valid_exit:   
-                  lea  dx, selectedMsg
-                  call PrintString
-                  mov  ah, 4Ch
-                  int  21h
+                  call ClearScreen
+                  jmp  SelectBase
 
     exit_key:     
                   ret
