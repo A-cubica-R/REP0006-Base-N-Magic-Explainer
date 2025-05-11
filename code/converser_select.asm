@@ -1,12 +1,15 @@
 .MODEL small
 .STACK 100h
+PUBLIC SelectBase
 .DATA
-    inputBuffer  db 10, ?, 10 DUP('$')             ; Buffer para almacenar el número ingresado (máximo 10 caracteres)
-    newLine      db 0Dh, 0Ah, '$'                  ; Secuencia para nueva línea (carruaje + salto de línea)
-    promptInput  db 'Ingrese un numero: $'
-    promptOutput db 'El numero ingresado es: $'
-
-    PUBLIC SelectBase
+    functionInput   db "Bienvenido, seleccione la base desde la que va a trabajar:", 13, 10, "$"
+    functionOutput  db "Seleccione la base de destino:", 13, 10, "$"
+    basesN          db "1 - Binario", 13, 10, "2 - Octal", 13, 10, "3 - Decimal", 13, 10, "4 - Decimal", 13, 10, "$"
+    promptOutput    db 'El numero ingresado es: $'
+    inputBuffer     db 10, ?, 10 DUP('$')                                                                               ;Base de entrada
+    outputBuffer    db 10, ?, 10 DUP('$')                                                                               ;Base de salida
+    numberToConvert db 10, ?, 10 DUP('$')                                                                               ;Numero a convertir
+    newLine         db 0Dh, 0Ah, '$'
 
 .CODE
 Main PROC NEAR
@@ -19,17 +22,22 @@ SelectBase PROC
                  mov  ds, ax
 
     ; Mostrar mensaje para ingresar un número
-                 lea  dx, promptInput
+                 lea  dx, functionInput
                  call print_string
-
-    ; Capturar número ingresado
+                 lea  dx, basesN
+                 call print_string
                  lea  dx, inputBuffer
                  mov  ah, 0Ah                ; Función de DOS para entrada de cadena
                  int  21h                    ; Leer entrada desde teclado
 
     ; Pasar a nueva línea
-                 lea  dx, newLine
+                 lea  dx, functionOutput
                  call print_string
+                 lea  dx, basesN
+                 call print_string
+                 lea  dx, outputBuffer
+                 mov  ah, 0Ah                ; Función de DOS para entrada de cadena
+                 int  21h                    ; Leer entrada desde teclado
 
     ; Mostrar mensaje con el resultado
                  lea  dx, promptOutput
