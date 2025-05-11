@@ -1,5 +1,8 @@
 .model small
+
 .stack 100h
+
+EXTERN ShowAbout:NEAR
 
 .data
     ; Title Style A
@@ -26,7 +29,7 @@
     menu3a      db "  #   [C] CONVERT            #  ",13,10,"$"
     menu4a      db "  #                          #  ",13,10,"$"
     menu5a      db "  #  Enter an option (MAYUS) #  ",13,10,"$"
-    menu6a      db "  ############################  ",13,10,"$"
+    menu6a      db "  ############################  ",13,10,"$" 
 
     ; Menu Style B
     menu1b      db "  ****************************  ",13,10,"$"
@@ -107,8 +110,8 @@ Delay ENDP
     ; Variant A
     ; ---------------------------------------------------
 ShowWelcomeVariantA PROC
-                        call ClearScreen                  ; clear screen
-                        lea  dx, title1a                  ; defining the title A
+                        call ClearScreen                   ; clear screen
+                        lea  dx, title1a                   ; defining the title A
                         call PrintString
                         lea  dx, title2a
                         call PrintString
@@ -116,7 +119,7 @@ ShowWelcomeVariantA PROC
                         call PrintString
                         lea  dx, title4a
                         call PrintString
-                        lea  dx, menu1a                   ; defining the menu A
+                        lea  dx, menu1a                    ; defining the menu A
                         call PrintString
                         lea  dx, menu2a
                         call PrintString
@@ -128,12 +131,12 @@ ShowWelcomeVariantA PROC
                         call PrintString
                         lea  dx, menu6a
                         call PrintString
-                        lea  dx, selectedMsg              ; Dinamic line for selected character
+                        lea  dx, selectedMsg               ; Dinamic line for selected character
                         call PrintString
-                        lea  dx, prompt                   ; write line for the user
+                        lea  dx, prompt                    ; write line for the user
                         call PrintString
-                        call Delay                        ; delay for a while
-                        call CheckKey                     ; check if the correct key was pressed
+                        call Delay                         ; delay for a while
+                        call CheckKey                      ; check if the correct key was pressed
                         ret
 ShowWelcomeVariantA ENDP
 
@@ -141,8 +144,8 @@ ShowWelcomeVariantA ENDP
     ; Variant B
     ; ---------------------------------------------------
 ShowWelcomeVariantB PROC
-                        call ClearScreen                  ; clear screen
-                        lea  dx, title1b                  ; defining the title B
+                        call ClearScreen                   ; clear screen
+                        lea  dx, title1b                   ; defining the title B
                         call PrintString
                         lea  dx, title2b
                         call PrintString
@@ -150,7 +153,7 @@ ShowWelcomeVariantB PROC
                         call PrintString
                         lea  dx, title4b
                         call PrintString
-                        lea  dx, menu1b                   ; defining the menu B
+                        lea  dx, menu1b                    ; defining the menu B
                         call PrintString
                         lea  dx, menu2b
                         call PrintString
@@ -162,12 +165,12 @@ ShowWelcomeVariantB PROC
                         call PrintString
                         lea  dx, menu6b
                         call PrintString
-                        lea  dx, selectedMsg              ; Dinamic line for selected character
+                        lea  dx, selectedMsg               ; Dinamic line for selected character
                         call PrintString
-                        lea  dx, prompt                   ; write line for the user
+                        lea  dx, prompt                    ; write line for the user
                         call PrintString
-                        call Delay                        ; delay for a while
-                        call CheckKey                     ; check if the correct key was pressed
+                        call Delay                         ; delay for a while
+                        call CheckKey                      ; check if the correct key was pressed
                         ret
 ShowWelcomeVariantB ENDP
 
@@ -175,8 +178,8 @@ ShowWelcomeVariantB ENDP
     ; Variant C
     ; ---------------------------------------------------
 ShowWelcomeVariantC PROC
-                        call ClearScreen                  ; clear screen
-                        lea  dx, title1c                  ; defining the title C
+                        call ClearScreen                   ; clear screen
+                        lea  dx, title1c                   ; defining the title C
                         call PrintString
                         lea  dx, title2c
                         call PrintString
@@ -184,7 +187,7 @@ ShowWelcomeVariantC PROC
                         call PrintString
                         lea  dx, title4c
                         call PrintString
-                        lea  dx, menu1c                   ; defining the menu C
+                        lea  dx, menu1c                    ; defining the menu C
                         call PrintString
                         lea  dx, menu2c
                         call PrintString
@@ -196,12 +199,12 @@ ShowWelcomeVariantC PROC
                         call PrintString
                         lea  dx, menu6c
                         call PrintString
-                        lea  dx, selectedMsg              ; Dinamic line for selected character
+                        lea  dx, selectedMsg               ; Dinamic line for selected character
                         call PrintString
-                        lea  dx, prompt                   ; write line for the user
+                        lea  dx, prompt                    ; write line for the user
                         call PrintString
-                        call Delay                        ; delay for a while
-                        call CheckKey                     ; check if the correct key was pressed
+                        call Delay                         ; delay for a while
+                        call CheckKey                      ; check if the correct key was pressed
                         ret
 ShowWelcomeVariantC ENDP
 
@@ -209,41 +212,47 @@ ShowWelcomeVariantC ENDP
     ; CheckKey con etiquetas locales
     ; ---------------------------------------------------
 CheckKey PROC
-                        mov  ah,0Bh
+                        mov  ah, 0Bh                       ; check keyboard without waiting
                         int  21h
-                        cmp  al,0
+                        cmp  al, 0
                         je   no_key
 
-                        mov  ah,01h
-                        int  21h                          ; AL = tecla
-                        cmp  al,'A'
+                        mov  ah, 01h                       ; leer tecla (espera si no hay)
+                        int  21h                           ; AL = carácter leído
+                        cmp  al, 'A'
                         je   store_char
-                        cmp  al,'C'
+                        cmp  al, 'C'
                         je   store_char
                         jmp  no_key
 
     store_char:         
-                        mov  [charBuffer],al
-                        mov  byte ptr selectedMsg+6,al
-                        ret
+                        mov  [charBuffer], al
+                        mov  byte ptr selectedMsg+6, al
+                        ret                                ; vuelve al bucle principal
 
     no_key:             
-                        cmp  al,0Dh
+                        cmp  al, 0Dh                       ; ¿Enter?
                         jne  exit_key
 
-                        mov  al,[charBuffer]
-                        cmp  al,'A'
-                        je   valid_exit
-                        cmp  al,'C'
+    ; Si llegamos aquí, se pulsó Enter:
+                        mov  al, [charBuffer]
+                        cmp  al, 'A'
+                        je   do_about_a
+                        cmp  al, 'C'
                         je   valid_exit
 
+    ; cualquier otra, repintar menú
                         call ClearScreen
                         jmp  menu_animation_loop
 
+    do_about_a:         
+                        call ClearScreen
+                        call ShowAbout
+
     valid_exit:         
-                        lea  dx,selectedMsg
+                        lea  dx, selectedMsg
                         call PrintString
-                        mov  ah,4Ch
+                        mov  ah, 4Ch
                         int  21h
 
     exit_key:           
