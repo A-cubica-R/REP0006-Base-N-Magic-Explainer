@@ -4,6 +4,7 @@ PUBLIC SelectBase
 .DATA
     functionInput   db "Bienvenido, seleccione la base desde la que va a trabajar:", 13, 10, "$"
     functionOutput  db "Seleccione la base de destino:", 13, 10, "$"
+    functionValue   db "Digite su número", 13, 10, "$"
     basesN          db "1 - Binario", 13, 10, "2 - Octal", 13, 10, "3 - Decimal", 13, 10, "4 - Decimal", 13, 10, "$"
     promptOutput    db 'El numero ingresado es: $'
     inputBuffer     db 10, ?, 10 DUP('$')                                                                               ;Base de entrada
