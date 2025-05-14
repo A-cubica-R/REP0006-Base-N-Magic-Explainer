@@ -1,7 +1,7 @@
 .MODEL small
 .STACK 100h
 
-EXTERN _ToOct:NEAR
+EXTERN ToOct:NEAR
 
 .DATA
     ; General messages

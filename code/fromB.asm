@@ -6,7 +6,7 @@
 .STACK 100h
 
 PUBLIC _ToBin
-PUBLIC _ToOct
+PUBLIC ToOct
 PUBLIC _ToDec
 PUBLIC _ToHex
 
@@ -24,18 +24,15 @@ Main PROC
 
                 call ClearScreen
 
-    ; invoca _ToOct(srcPtr, length, destPtr)
-                lea  si, testBuf            ; SI ← offset de testBuf
-                mov  cl, [testLen]          ; CL ← longitud
-
-                xor  ch, ch                 ; CH = 0
-                
-                lea  di, outBuf             ; DI ← offset de outBuf
+    ; invoca ToOct(srcPtr, length, destPtr)
+                lea  si, testBuf            ; SI = offset de '101101'
+                mov  cl, [testLen]          ; CL = 6
+                xor  ch, ch                 ; CH = 0  <-- asegúrate de limpiar CH
+                lea  di, outBuf             ; DI = offset de outBuf
                 push di                     ; destPtr
                 push cx                     ; length
                 push si                     ; srcPtr
-                call _ToOct
-                add  sp, 6                  ; limpiar pila (3 parámetros × 2 bytes)
+                call ToOct
 
     ; imprime outBuf con '$'
                 lea  dx, outBuf
@@ -52,7 +49,7 @@ _ToBin PROC
                 ret
 _ToBin ENDP
 
-    ;---------------------- _ToOct -----------------------
+    ;---------------------- ToOct -----------------------
     ; Convierte una cadena binaria (base 2) a octal y escribe la
     ; representación en la cadena apuntada por destPtr, terminada en '$'.
     ;
@@ -61,7 +58,7 @@ _ToBin ENDP
     ;   [bp+6] length   ; número de caracteres
     ;   [bp+8] destPtr  ; offset de buffer destino
     ;
-_ToOct PROC NEAR
+ToOct PROC NEAR
                 push bp
                 mov  bp, sp
 
@@ -108,7 +105,7 @@ _ToOct PROC NEAR
 
                 pop  bp
                 ret  6                      ; limpia parámetros (3×2 bytes)
-_ToOct ENDP
+ToOct ENDP
 
 _ToDec PROC
     ; Acá va el código para convertir a decimal
