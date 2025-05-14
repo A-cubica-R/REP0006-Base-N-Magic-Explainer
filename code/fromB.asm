@@ -1,129 +1,80 @@
-    ;-------------------------------------------------
-    ; archivo: Bin2Oct.asm
-    ; Ensamblador: MASM en DOS-BOX 16-bits
-    ;-------------------------------------------------
-.MODEL small
+.MODEL SMALL
 .STACK 100h
 
-PUBLIC _ToBin
 PUBLIC ToOct
-PUBLIC _ToDec
-PUBLIC _ToHex
 
 .DATA
-    testBuf db '111111'           ; cadena binaria de prueba
-    testLen db 6                  ; longitud = 6 dígitos
-    outBuf  db 6 dup('?'), '$'    ; buffer para la cadena octal + '$'
+num     dw 111111b      ; binary 111111 (decimal 63)
+buffer  db 8 dup(0)
 
 .CODE
+ORG 100h
+start:
+    mov ax, @data
+    mov ds, ax
 
-    ;----------------------- Main -----------------------
-Main PROC
-                mov  ax, @data
-                mov  ds, ax
+    mov ax, num
+    lea di, buffer
+    call ToOct
 
-                call ClearScreen
+    ; print result
+    lea dx, buffer
+    mov ah, 09h
+    int 21h
 
-    ; invoca ToOct(srcPtr, length, destPtr)
-                lea  si, testBuf            ; SI = offset de '101101'
-                mov  cl, [testLen]          ; CL = 6
-                xor  ch, ch                 ; CH = 0  <-- asegúrate de limpiar CH
-                lea  di, outBuf             ; DI = offset de outBuf
-                push di                     ; destPtr
-                push cx                     ; length
-                push si                     ; srcPtr
-                call ToOct
+    mov ah, 4ch
+    int 21h
 
-    ; imprime outBuf con '$'
-                lea  dx, outBuf
-                mov  ah, 9
-                int  21h
+;---------------------------------
+; AX = value, DI = buffer
+;---------------------------------
+ToOct PROC
+    push bx
+    push cx
+    push dx
+    mov bx, 8
+    mov cx, 0
+    mov si, di
+    cmp ax, 0
+    jne convert
+    mov byte ptr [di], '0'
+    inc di
+    jmp done
 
-    ; termina programa
-                mov  ah, 4Ch
-                int  21h
-Main ENDP
+convert:
+oct_loop:
+    xor dx, dx
+    div bx
+    add dl, '0'
+    mov [di], dl
+    inc di
+    inc cx
+    cmp ax, 0
+    jne oct_loop
 
-_ToBin PROC
-    ; Acá va el código para convertir a binario
-                ret
-_ToBin ENDP
+done:
+    mov byte ptr [di], '$'
 
-    ;---------------------- ToOct -----------------------
-    ; Convierte una cadena binaria (base 2) a octal y escribe la
-    ; representación en la cadena apuntada por destPtr, terminada en '$'.
-    ;
-    ; Parámetros (pila):
-    ;   [bp+4] srcPtr   ; offset de cadena de caracteres '0'/'1'
-    ;   [bp+6] length   ; número de caracteres
-    ;   [bp+8] destPtr  ; offset de buffer destino
-    ;
-ToOct PROC NEAR
-                push bp
-                mov  bp, sp
-
-                mov  si, [bp+4]             ; srcPtr
-                mov  cx, [bp+6]             ; length
-
-                mov  si, [bp+4]             ; srcPtr
-                mov  cl, byte ptr [bp+6]    ; CL = length
-                xor  ch, ch                 ; CH = 0
-
-                mov  di, [bp+8]             ; destPtr
-                xor  ax, ax                 ; AX como acumulador
-
-    ; 1) Parsear binario → valor en AX
-    BinLoop:    
-                mov  dl, [si]
-                sub  dl, '0'
-                shl  ax, 1
-                add  ax, dx
-                inc  si
-                loop BinLoop
-
-    ; 2) Convertir AX (valor decimal) a octal apilando restos
-                xor  cx, cx                 ; CX = contador de dígitos
-    ConvLoop:   
-                mov  bx, 8
-                xor  dx, dx
-                div  bx                     ; AX = AX/8, DX = AX%8
-                push dx                     ; apilar dígito
-                inc  cx
-                cmp  ax, 0
-                jne  ConvLoop
-
-    ; 3) Desapilar y escribir dígitos en destPtr
-    WriteLoop:  
-                pop  dx
-                add  dl, '0'
-                mov  [di], dl
-                inc  di
-                loop WriteLoop
-
-    ; 4) Terminar cadena con '$'
-                mov  byte ptr [di], '$'
-
-                pop  bp
-                ret  6                      ; limpia parámetros (3×2 bytes)
+    ; Reverse digits
+    mov si, si
+    dec di
+    dec di
+    cmp cx, 1
+    jbe skip_reverse
+rev_loop:
+    mov al, [si]
+    mov ah, [di]
+    mov [si], ah
+    mov [di], al
+    inc si
+    dec di
+    cmp si, di
+    jb rev_loop
+skip_reverse:
+    pop dx
+    pop cx
+    pop bx
+    ret
 ToOct ENDP
 
-_ToDec PROC
-    ; Acá va el código para convertir a decimal
-                ret
-_ToDec ENDP
-
-_ToHex PROC
-    ; Acá va el código para convertir a hexadecimal
-                ret
-_ToHex ENDP
-
-    ;------------------ Rutina auxiliar ------------------
-    ; Limpia la pantalla (modo texto 80×25, página 0)
-ClearScreen PROC NEAR
-                mov  ah, 0
-                mov  al, 3
-                int  10h
-                ret
-ClearScreen ENDP
-
-END Main
+END start

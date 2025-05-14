@@ -51,40 +51,27 @@ SelectBase PROC NEAR
 
     ; Call procedures for each step of the process
                    call   ClearScreen
-                   call   ReadBaseSource              ; Reads and stores the source base in BL (1..4)
+                   call   ReadBaseSource        ; Reads and stores the source base in BL (1..4)
                    call   ClearScreen
-                   call   ReadBaseTarget              ; Reads and stores the target base in BH (1..4)
+                   call   ReadBaseTarget        ; Reads and stores the target base in BH (1..4)
                    call   ClearScreen
-                   call   ReadNumber                  ; Reads the number string into bufNumber
-                   call   ValidateNumber              ; Validates bufNumber based on the source base in BL
+                   call   ReadNumber            ; Reads the number string into bufNumber
+                   call   ValidateNumber        ; Validates bufNumber based on the source base in BL
                    call   ClearScreen
-                   call   PrintSelection              ; Displays a summary of the selection (uses BL and BH)
-                   call   PromptContinue              ; Prompts the user to confirm (Y/N)
+                   call   PrintSelection        ; Displays a summary of the selection (uses BL and BH)
+                   call   PromptContinue        ; Prompts the user to confirm (Y/N)
                    cmp    al,'Y'
-                   je     DoConversion                ; If 'Y', proceed to conversion
+                   je     DoConversion          ; If 'Y', proceed to conversion
                    cmp    al,'y'
-                   je     DoConversion                ; If 'y', proceed to conversion
-                   ret                                ; Return without converting if not confirmed
+                   je     DoConversion          ; If 'y', proceed to conversion
+                   ret                          ; Return without converting if not confirmed
 
     DoConversion:  
-                   cmp    bl,1                        ; Check if source base is Binary (1)
+                   cmp    bl,1                  ; Check if source base is Binary (1)
                    jne    SkipConversion
-                   cmp    bh,2                        ; Check if target base is Octal (2)
+                   cmp    bh,2                  ; Check if target base is Octal (2)
                    jne    SkipConversion
-
-    ; Carga DS si hace falta
-                   mov    ax, @DATA
-                   mov    ds, ax
-
-    ; Empuja los parámetros en el orden inverso
-    ; 1) Puntero al primer carácter
-                   lea    dx, bufNumber+2
-                   push   dx
-    ; 2) Longitud (nº de dígitos)
-                   mov    cl, byte ptr bufNumber+1
-                   push   cx
-                   call   _ToOct
-                   add    sp, 4                       ; Call BTo_Oct for Binary to Octal conversion
+                   call   ToOct               ; Call BTo_Oct for Binary to Octal conversion
     SkipConversion:
                    ret
 SelectBase ENDP
@@ -106,18 +93,18 @@ ReadBaseSource PROC NEAR
                    lea    dx, bufBase
                    mov    ah,0Ah
                    int    21h
-                   mov    al, bufBase+2               ; Read input ('1'..'4')
+                   mov    al, bufBase+2         ; Read input ('1'..'4')
                    sub    al,'0'
                    cmp    al,1
-                   jb     ErrorBase                   ; If less than 1, show error
+                   jb     ErrorBase             ; If less than 1, show error
                    cmp    al,4
-                   ja     ErrorBase                   ; If greater than 4, show error
-                   mov    bl,al                       ; Store valid input in BL
+                   ja     ErrorBase             ; If greater than 4, show error
+                   mov    bl,al                 ; Store valid input in BL
                    ret
     ErrorBase:     
                    lea    dx, msgError
                    call   print_string
-                   call   ReadBaseSource              ; Retry reading source base
+                   call   ReadBaseSource        ; Retry reading source base
                    ret
 ReadBaseSource ENDP
 
@@ -138,18 +125,18 @@ ReadBaseTarget PROC NEAR
                    lea    dx, bufBase
                    mov    ah,0Ah
                    int    21h
-                   mov    al, bufBase+2               ; Read input ('1'..'4')
+                   mov    al, bufBase+2         ; Read input ('1'..'4')
                    sub    al,'0'
                    cmp    al,1
-                   jb     ErrorTarget                 ; If less than 1, show error
+                   jb     ErrorTarget           ; If less than 1, show error
                    cmp    al,4
-                   ja     ErrorTarget                 ; If greater than 4, show error
-                   mov    bh,al                       ; Store valid input in BH
+                   ja     ErrorTarget           ; If greater than 4, show error
+                   mov    bh,al                 ; Store valid input in BH
                    ret
     ErrorTarget:   
                    lea    dx, msgError
                    call   print_string
-                   call   ReadBaseTarget              ; Retry reading target base
+                   call   ReadBaseTarget        ; Retry reading target base
                    ret
 ReadBaseTarget ENDP
 
@@ -166,10 +153,10 @@ ReadNumber PROC NEAR
                    lea    dx, bufNumber
                    mov    ah,0Ah
                    int    21h
-                   mov    cl, [bufNumber+1]           ; CL = number of characters read
+                   mov    cl, [bufNumber+1]     ; CL = number of characters read
                    lea    di, bufNumber+2
-                   add    di, cx                      ; DI = address after the last digit
-                   mov    byte ptr [di], '$'          ; Append '$' to terminate the string
+                   add    di, cx                ; DI = address after the last digit
+                   mov    byte ptr [di], '$'    ; Append '$' to terminate the string
                    ret
 ReadNumber ENDP
 
@@ -181,20 +168,20 @@ ReadNumber ENDP
     ; 2. Checks if the character is valid for the source base (BL).
     ; 3. If invalid, displays an error message and retries reading the number.
 ValidateNumber PROC NEAR
-                   mov    cl, bufNumber+1             ; Length of the input string
+                   mov    cl, bufNumber+1       ; Length of the input string
                    lea    si, bufNumber+2
     ValidateLoop:  
                    cmp    cl,0
-                   je     ValidOK                     ; If all characters are valid, exit
+                   je     ValidOK               ; If all characters are valid, exit
                    mov    dl,[si]
                    cmp    bl,1
-                   je     CheckBin                    ; Validate for binary base
+                   je     CheckBin              ; Validate for binary base
                    cmp    bl,2
-                   je     CheckOct                    ; Validate for octal base
+                   je     CheckOct              ; Validate for octal base
                    cmp    bl,3
-                   je     CheckDec                    ; Validate for decimal base
+                   je     CheckDec              ; Validate for decimal base
                    cmp    bl,4
-                   je     CheckHex                    ; Validate for hexadecimal base
+                   je     CheckHex              ; Validate for hexadecimal base
                    jmp    ErrorDigit
 
     CheckBin:      
@@ -241,7 +228,7 @@ ValidateNumber PROC NEAR
     ErrorDigit:    
                    lea    dx, msgError
                    call   print_string
-                   call   ReadNumber                  ; Retry reading the number
+                   call   ReadNumber            ; Retry reading the number
                    jmp    ValidateNumber
 
     ValidOK:       
@@ -259,13 +246,13 @@ PrintSelection PROC NEAR
                    call   print_string
                    lea    dx, msgSelPart1
                    call   print_string
-                   mov    al, bl                      ; Source base in BL
-                   call   PrintBaseName               ; Print the name of the source base
+                   mov    al, bl                ; Source base in BL
+                   call   PrintBaseName         ; Print the name of the source base
 
                    lea    dx, msgSelPart2
                    call   print_string
-                   mov    al, bh                      ; Target base in BH
-                   call   PrintBaseName               ; Print the name of the target base
+                   mov    al, bh                ; Target base in BH
+                   call   PrintBaseName         ; Print the name of the target base
 
                    lea    dx, newline
                    call   print_string
@@ -273,7 +260,7 @@ PrintSelection PROC NEAR
                    call   print_string
                    lea    dx, msgNumPart
                    call   print_string
-                   lea    dx, bufNumber+2             ; Number string
+                   lea    dx, bufNumber+2       ; Number string
                    call   print_string
 
                    lea    dx, newline
@@ -323,7 +310,7 @@ PrintBaseName ENDP
 PromptContinue PROC NEAR
                    mov    ah,01h
                    int    21h
-                   ret                                ; AL contains 'Y' or 'N'
+                   ret                          ; AL contains 'Y' or 'N'
 PromptContinue ENDP
 
     ; Helper procedure to print a string using DOS interrupt 21h, function 09h
