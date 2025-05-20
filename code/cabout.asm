@@ -11,7 +11,7 @@ EXTERN main:NEAR
     aboutLine2 DB "Developed by: Adolfo Alejandro Arenas Ramos", 13,10, "$"
     aboutLine3 DB "Developed by: Gabriel Camilo Pinto Andrade", 13,10, "$"
     aboutLine4 DB "Contacto: adolfoalejandroarenasramos@outlook.com", 13,10, "$"
-    pressAny   DB "PPlease use any key to exit of this screen...",13,10,"$"
+    pressAny   DB "Please use any key to exit of this screen...",13,10,"$"
     ; -------------------------------------------------------------------
 
 .CODE

@@ -22,20 +22,22 @@ Start PROC
                 call PrintInit
 Start ENDP
 
-BToBin PROC
+HToBin PROC
                 call PrintInit
+                call PrintNot
                 call PrintEndg
                 ret
-BToBin ENDP
+HToBin ENDP
 
-BToOct PROC
+HToOct PROC
                 call PrintInit
+                call PrintNot
                 call PrintEndg
                 ret
-BToOct ENDP
+HToOct ENDP
 
     ; convert AX result from StrToNum into decimal string
-BToDec PROC
+HToDec PROC
                 call PrintInit             ; Print the initialization message
                 push ax
                 push bx
@@ -87,13 +89,14 @@ BToDec PROC
                 pop  ax
                 call PrintEndg             ; Print the finalization message
                 ret
-BToDec ENDP
+HToDec ENDP
 
-BToHex PROC
+HToHex PROC
                 call PrintInit
+                call PrintNot
                 call PrintEndg
                 ret
-BToHex ENDP
+HToHex ENDP
 
     ; ===================== AUX METHODS =====================
 

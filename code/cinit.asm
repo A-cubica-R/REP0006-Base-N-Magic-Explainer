@@ -49,7 +49,7 @@ PUBLIC main
 main PROC
                   mov  ax,@data
                   mov  ds,ax
-                  call welcome_loop
+                  jmp welcome_loop
 main ENDP
 
 welcome_loop PROC
@@ -218,8 +218,8 @@ CheckKey PROC
 
     valid_exit:   
                   call ClearScreen
-                  jmp  SelectBase
-
+                  call SelectBase
+                ;   jmp  welcome_loop ; no sé si debe saltar
     exit_key:     
                   ret
 CheckKey ENDP
