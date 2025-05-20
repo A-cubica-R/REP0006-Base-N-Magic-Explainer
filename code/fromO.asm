@@ -2,10 +2,10 @@
 .MODEL SMALL
 .STACK 100h
 
-PUBLIC HToOct
-PUBLIC HToDec
-PUBLIC HToHex
-PUBLIC HToBin
+PUBLIC OToOct
+PUBLIC OToDec
+PUBLIC OToHex
+PUBLIC OToBin
 
 EXTERN bufResult:BYTE   ; 'cselect.asm' result buffer
 
@@ -22,33 +22,33 @@ Start PROC
                 call PrintInit
 Start ENDP
 
-HToBin PROC
+OToBin PROC
                 call PrintInit
                 call PrintNot
                 call PrintEndg
                 ret
-HToBin ENDP
+OToBin ENDP
 
-HToOct PROC
+OToOct PROC
                 call PrintInit
                 call PrintNot
                 call PrintEndg
                 ret
-HToOct ENDP
+OToOct ENDP
 
-HToDec PROC
+OToDec PROC
                 call PrintInit
                 call PrintNot
                 call PrintEndg
                 ret
-HToDec ENDP
+OToDec ENDP
 
-HToHex PROC
+OToHex PROC
                 call PrintInit
                 call PrintNot
                 call PrintEndg
                 ret
-HToHex ENDP
+OToHex ENDP
 
     ; ===================== AUX METHODS =====================
 
