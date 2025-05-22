@@ -30,15 +30,15 @@ EXTERN main:NEAR ; Procedure to return to the main module cinit
 
     ; Print the ABOUT section for the program
 ShowAbout PROC NEAR PUBLIC
-                 call ClearScreen            ; Clear the screen
+                 CALL ClearScreen            ; Clear the screen
                  CALL PrintContent           ;  Print the content on the screen
 
-                 mov  ah,  1                 ; Wait for a key
-                 int  21h
+                 MOV  AH,  1                 ; Wait for a key
+                 INT  21h
 
-                 call ClearScreen            ; Clear the screen again
+                 CALL ClearScreen            ; Clear the screen again
                  CALL MAIN                   ; EXTERNAL PROCEDURE -> cinit.asm
-                 ret
+                 RET
 ShowAbout ENDP
 
     ; ======= AUX PROCEDURES =======
@@ -46,44 +46,44 @@ ShowAbout ENDP
     ; Print the content of the variables
 PrintContent PROC
                  LEA  DX, var_aboutLine9
-                 call PrintString
-                 lea  dx, var_aboutLine1
-                 call PrintString
-                 lea  dx, var_aboutLine2
-                 call PrintString
-                 lea  dx, var_aboutLine3
-                 call PrintString
-                 lea  dx, var_aboutLine4
-                 call PrintString
-                 lea  dx, var_aboutLine5
-                 call PrintString
-                 lea  dx, var_aboutLine6
-                 call PrintString
-                 lea  dx, var_aboutLine7
-                 call PrintString
-                 lea  dx, var_aboutLine8
-                 call PrintString
-                 lea  dx, var_aboutLine9
-                 call PrintString
-                 lea  dx, var_aboutLine10
-                 call PrintString
-                 lea  dx, var_aboutLine11
-                 call PrintString
-                 lea  dx, var_aboutLine12
-                 call PrintString
-                 lea  dx, var_aboutLine13
-                 call PrintString
-                 lea  dx, var_aboutLine14
-                 call PrintString
-                 lea  dx, var_aboutLine15
-                 call PrintString
-                 lea  dx, var_aboutLine16
-                 call PrintString
-                 lea  dx, var_aboutLine17
-                 call PrintString
-                 lea  dx, var_pressAny
-                 call PrintString
-                 ret
+                 CALL PrintString
+                 LEA  DX, var_aboutLine1
+                 CALL PrintString
+                 LEA  DX, var_aboutLine2
+                 CALL PrintString
+                 LEA  DX, var_aboutLine3
+                 CALL PrintString
+                 LEA  DX, var_aboutLine4
+                 CALL PrintString
+                 LEA  DX, var_aboutLine5
+                 CALL PrintString
+                 LEA  DX, var_aboutLine6
+                 CALL PrintString
+                 LEA  DX, var_aboutLine7
+                 CALL PrintString
+                 LEA  DX, var_aboutLine8
+                 CALL PrintString
+                 LEA  DX, var_aboutLine9
+                 CALL PrintString
+                 LEA  DX, var_aboutLine10
+                 CALL PrintString
+                 LEA  DX, var_aboutLine11
+                 CALL PrintString
+                 LEA  DX, var_aboutLine12
+                 CALL PrintString
+                 LEA  DX, var_aboutLine13
+                 CALL PrintString
+                 LEA  DX, var_aboutLine14
+                 CALL PrintString
+                 LEA  DX, var_aboutLine15
+                 CALL PrintString
+                 LEA  DX, var_aboutLine16
+                 CALL PrintString
+                 LEA  DX, var_aboutLine17
+                 CALL PrintString
+                 LEA  DX, var_pressAny
+                 CALL PrintString
+                 RET
 PrintContent ENDP
 
     ; Print the value located in DX register
