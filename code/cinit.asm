@@ -243,7 +243,7 @@ CheckKey PROC
 
     _doAboutB:          
                         CALL ClearScreen
-                    ;   CALL SelectBase ; EXTERNAL PROCEDURE -> cselect.asm
+    ;   CALL SelectBase ; EXTERNAL PROCEDURE -> cselect.asm
     _doAboutC:          
                         CALL Cinit_END
     _exitKey:           
