@@ -1,234 +1,254 @@
-.model small
+.MODEL small
 
-.stack 100h
+.STACK 100h
 
 EXTERN ShowAbout:NEAR
 EXTERN SelectBase:NEAR
-PUBLIC main
+; PUBLIC main
 
-.data
+.DATA
 
-    titleOn1    db " /######    /##    / ##  /##      /##  /########", 13, 10, "$"
-    titleOn2    db "| #     ## | ###   | ## / ###    /### | ##_____/", 13, 10, "$"
-    titleOn3    db "| #     ## | ####  | ## | ####  /#### | ##      ", 13, 10, "$"
-    titleOn4    db "| ##### /  | ## ## | ## | ## ##/## ## | ######  ", 13, 10, "$"
-    titleOn5    db "| #     ## | ##\ ##| ## | ##  ###| ## | ##      ", 13, 10, "$"
-    titleOn6    db "| #     ## | ## \ ##### | ##\  # | ## | ##      ", 13, 10, "$"
-    titleOn7    db "| #######/ | ##  \ #### | ## \/  | ## | ########", 13, 10, "$"
-    titleOn8    db "|_______/  |__/   \___/ |__/     |__/ |________/", 13, 10, "$"
+    ; For title ON
+    var_titleOn1        db " /######    /##    / ##  /##      /##  /########", 13, 10, "$"
+    var_titleOn2        db "| #     ## | ###   | ## / ###    /### | ##_____/", 13, 10, "$"
+    var_titleOn3        db "| #     ## | ####  | ## | ####  /#### | ##      ", 13, 10, "$"
+    var_titleOn4        db "| ##### /  | ## ## | ## | ## ##/## ## | ######  ", 13, 10, "$"
+    var_titleOn5        db "| #     ## | ##\ ##| ## | ##  ###| ## | ##      ", 13, 10, "$"
+    var_titleOn6        db "| #     ## | ## \ ##### | ##\  # | ## | ##      ", 13, 10, "$"
+    var_titleOn7        db "| #######/ | ##  \ #### | ## \/  | ## | ########", 13, 10, "$"
+    var_titleOn8        db "|_______/  |__/   \___/ |__/     |__/ |________/", 13, 10, "$"
 
-    titleOff1   db "                                          ", 13, 10, "$"
-    titleOff2   db " ######    ##    /##  /#      /## /#######", 13, 10, "$"
-    titleOff3   db "|#     ## |###   |## /###    /### |##____/", 13, 10, "$"
-    titleOff4   db "|#     ## |####  |## |####  /#### |##     ", 13, 10, "$"
-    titleOff5   db "|##### /  |## ## |## |## ##/## ## |###### ", 13, 10, "$"
-    titleOff6   db "|#     ## |##\ ##|## |##  ###| ## |##     ", 13, 10, "$"
-    titleOff7   db "|#     ## |## \ #### |##\  # | ## |##     ", 13, 10, "$"
-    titleOff8   db "|#######/ |##  \ ### |## \/  | ## |#######", 13, 10, "$"
+    ; For tittle OFF
+    var_titleOff1       db "                                          ", 13, 10, "$"
+    var_titleOff2       db " ######    ##    /##  /#      /## /#######", 13, 10, "$"
+    var_titleOff3       db "|#     ## |###   |## /###    /### |##____/", 13, 10, "$"
+    var_titleOff4       db "|#     ## |####  |## |####  /#### |##     ", 13, 10, "$"
+    var_titleOff5       db "|##### /  |## ## |## |## ##/## ## |###### ", 13, 10, "$"
+    var_titleOff6       db "|#     ## |##\ ##|## |##  ###| ## |##     ", 13, 10, "$"
+    var_titleOff7       db "|#     ## |## \ #### |##\  # | ## |##     ", 13, 10, "$"
+    var_titleOff8       db "|#######/ |##  \ ### |## \/  | ## |#######", 13, 10, "$"
 
-    ; Title Style C
-    descript0   db "  ====================================  ",13,10,"$"
-    descript1   db "  |          UNIT CONVERTER          |  ",13,10,"$"
-    descript2   db "  |      Base-N Magic Explainer!     |  ",13,10,"$"
-    descript3   db "  ====================================  ",13,10,"$"
+    ; Presentation banner
+    var_presentBanner1  db "  ====================================  ",13,10,"$"
+    var_presentBanner2  db "  |          UNIT CONVERTER          |  ",13,10,"$"
+    var_presentBanner3  db "  |      Base-N Magic Explainer!     |  ",13,10,"$"
+    var_presentBanner4  db "  ====================================  ",13,10,"$"
 
-    ; Menu Style A
-    dmenu0      db "  ####################################  ",13,10,"$"
-    dmenu1      db "  #  Enter an option (ONLY MAYUS)    #  ",13,10,"$"
-    dmenu2      db "  #   [A] ABOUT                      #  ",13,10,"$"
-    dmenu3      db "  #   [C] CONVERT                    #  ",13,10,"$"
-    dmenu4      db "  ####################################  ",13,10,"$"
+    ; Menu
+    var_initMenu1       db "  ####################################  ",13,10,"$"
+    var_initMenu2       db "  #  Enter an option (ONLY MAYUS)    #  ",13,10,"$"
+    var_initMenu3       db "  #   [A] ABOUT                      #  ",13,10,"$"
+    var_initMenu4       db "  #   [C] CONVERT                    #  ",13,10,"$"
+    var_initMenu5       db "  ####################################  ",13,10,"$"
 
-    selectedMsg db "Char ' ' selected, press ENTER to continue:",13,10,"$"
+    ; Message for selected char
+    var_selectedMessage db "Char ' ' selected, press ENTER to continue:",13,10,"$"
 
-    prompt      db "Select your choice: $"
+    ; Message for select an option
+    var_inputMessage    db "Select your choice: $"
 
-    charBuffer  db 0
-
-.code
-main PROC
-                  mov  ax,@data
-                  mov  ds,ax
-                  jmp welcome_loop
-main ENDP
-
-welcome_loop PROC
-                  call PrintTitleOn
-                  call PrintTitleOff
-                  jmp  welcome_loop
-welcome_loop ENDP
-
-Delay PROC
-                  push cx
-                  push bx
-
-                  mov  bx, 10                        ; Número de bucles externos (ajustable)
-    OuterLoop:    
-                  mov  cx, 0FFFFh                    ; Bucle interno largo
-    DelayLoop1:   
-                  nop
-                  loop DelayLoop1
-                  dec  bx
-                  jnz  OuterLoop
-                  pop  bx
-                  pop  cx
-                  ret
-Delay ENDP
+    ; Selected character
+    BUFFER_charSelected db 0
 
 
-Wait1Second PROC
-                  mov  ah, 86h                       ; Función BIOS: esperar tiempo
-                  mov  cx, 0h                        ; Alto de milisegundos
-                  mov  dx, 1000                      ; 1000 ms = 1 segundo
-                  int  15h
-                  ret
-Wait1Second ENDP
+.CODE
 
+    ; ======= PRINCIPAL PROCEDURES =======
 
-    ;=====================
-    ;Show the welcome
-    ;=====================
+    ; Main procedure
+MAIN PROC PUBLIC
+                        mov  ax,@data
+                        mov  ds,ax
+                        jmp  welcome_loop
+MAIN ENDP
 
-PrintTitleOn PROC
-                  call ClearScreen
-                  lea  dx, titleOn1
-                  call PrintString
-                  lea  dx, titleOn2
-                  call PrintString
-                  lea  dx, titleOn3
-                  call PrintString
-                  lea  dx, titleOn4
-                  call PrintString
-                  lea  dx, titleOn5
-                  call PrintString
-                  lea  dx, titleOn6
-                  call PrintString
-                  lea  dx, titleOn7
-                  call PrintString
-                  lea  dx, titleOn8
-                  call PrintString
-                  call PrintDescript
-                  call PrintMenu
-                  call Delay
-                  call CheckKey
-                  ret
-PrintTitleOn ENDP
+    ; Show the title types and repeat
+Welcome_loop PROC
+                        call ShowPresentationON
+                        call ShowPresentationOFF
+                        jmp  welcome_loop
+Welcome_loop ENDP
 
-PrintTitleOff PROC
-                  call ClearScreen
-                  lea  dx, titleOff1
-                  call PrintString
-                  lea  dx, titleOff2
-                  call PrintString
-                  lea  dx, titleOff3
-                  call PrintString
-                  lea  dx, titleOff4
-                  call PrintString
-                  lea  dx, titleOff5
-                  call PrintString
-                  lea  dx, titleOff6
-                  call PrintString
-                  lea  dx, titleOff7
-                  call PrintString
-                  lea  dx, titleOff8
-                  call PrintString
-                  call PrintDescript
-                  call PrintMenu
-                  call Delay
-                  call CheckKey
-                  ret
+    ; ======= SECONDARY PROCEDURES =======
+
+    ; Show the title ON, banner, menu and messages
+ShowPresentationON PROC
+                        call ClearScreen
+                        call PrintTitleON
+                        call PrintBanner
+                        call PrintMenu
+                        call DoDelay
+                        call CheckKey
+                        ret
+ShowPresentationON ENDP
+
+    ; Show the title OFF, banner, menu and messages
+ShowPresentationOFF PROC
+                        call ClearScreen
+                        call PrintTitleOFF
+                        call PrintBanner
+                        call PrintMenu
+                        call DoDelay
+                        call CheckKey
+                        ret
+ShowPresentationOFF ENDP
+
+    ; ======= PRINT TITLES =======
+
+    ; Print the title in ON style
+PrintTitleON PROC
+                        lea  dx, var_titleOn1
+                        call PrintString
+                        lea  dx, var_titleOn2
+                        call PrintString
+                        lea  dx, var_titleOn3
+                        call PrintString
+                        lea  dx, var_titleOn4
+                        call PrintString
+                        lea  dx, var_titleOn5
+                        call PrintString
+                        lea  dx, var_titleOn6
+                        call PrintString
+                        lea  dx, var_titleOn7
+                        call PrintString
+                        lea  dx, var_titleOn8
+                        call PrintString
+                        ret
+PrintTitleON ENDP
+
+    ; Print the title in OFF style
+PrintTitleOFF PROC
+                        lea  dx, var_titleOff1
+                        call PrintString
+                        lea  dx, var_titleOff2
+                        call PrintString
+                        lea  dx, var_titleOff3
+                        call PrintString
+                        lea  dx, var_titleOff4
+                        call PrintString
+                        lea  dx, var_titleOff5
+                        call PrintString
+                        lea  dx, var_titleOff6
+                        call PrintString
+                        lea  dx, var_titleOff7
+                        call PrintString
+                        lea  dx, var_titleOff8
+                        call PrintString
+                        ret
 PrintTitleOff ENDP
 
-PrintDescript PROC
-                  lea  dx, descript0
-                  call PrintString
-                  lea  dx, descript1
-                  call PrintString
-                  lea  dx, descript2
-                  call PrintString
-                  lea  dx, descript3
-                  call PrintString
-                  ret
-PrintDescript ENDP
+    ; ------- PRINT MESSAGES -------
 
+    ; Print the banner
+PrintBanner PROC
+                        lea  dx, var_presentBanner1
+                        call PrintString
+                        lea  dx, var_presentBanner2
+                        call PrintString
+                        lea  dx, var_presentBanner3
+                        call PrintString
+                        lea  dx, var_presentBanner4
+                        call PrintString
+                        ret
+PrintBanner ENDP
+
+    ; Print the menu and the selection messages
 PrintMenu PROC
-                  lea  dx, dmenu0
-                  call PrintString
-                  lea  dx, dmenu1
-                  call PrintString
-                  lea  dx, dmenu2
-                  call PrintString
-                  lea  dx, dmenu3
-                  call PrintString
-                  lea  dx, dmenu4
-                  call PrintString
-                  lea  dx, selectedMsg
-                  call PrintString
-                  lea  dx, prompt
-                  call PrintString
-                  ret
+                        lea  dx, var_initMenu1
+                        call PrintString
+                        lea  dx, var_initMenu2
+                        call PrintString
+                        lea  dx, var_initMenu3
+                        call PrintString
+                        lea  dx, var_initMenu4
+                        call PrintString
+                        lea  dx, var_initMenu5
+                        call PrintString
+                        lea  dx, var_selectedMessage
+                        call PrintString
+                        lea  dx, var_inputMessage
+                        call PrintString
+                        ret
 PrintMenu ENDP
-                        
-    ;=====================
-    ; Auxiliar methods
-    ;=====================
+
+    ; ======= AUX PROCEDURES =======
+
+    ; Do a delay to simulate a 1 second waiting (not exactly)
+DoDelay PROC
+                        push cx                                    ; Save anything in CX before
+                        push bx                                    ; Save anything in BX before
+
+                        mov  bx, 10                                ; Number of bucles (adjustable)
+    _OuterLoop:         
+                        mov  cx, 0FFFFh                            ; Internal large bucle
+    _DelayLoop1:        
+                        nop                                        ; Do nothing, just consume time
+                        loop _DelayLoop1                           ; Do an internal bucle of CX (not the same as BX counter)
+                        dec  bx
+                        jnz  _OuterLoop                            ; Jump if BX is not zero
+                        pop  bx                                    ; Restore BX to the original value
+                        pop  cx                                    ; Restore CX to the original value
+                        ret
+DoDelay ENDP
+
+    ; Print the value located in DX register
 PrintString PROC
-                  mov  ah,09h
-                  int  21h
-                  ret
+                        mov  ah,09h
+                        int  21h
+                        ret
 PrintString ENDP
 
+    ; Check the key inputed by the user and comprobe if is 'A' or 'C'
 CheckKey PROC
-                  mov  ah, 0Bh                       ; check keyboard without waiting
-                  int  21h
-                  cmp  al, 0
-                  je   no_key
+                        mov  ah, 0Bh                               ; check keyboard without waiting
+                        int  21h
+                        cmp  al, 0
+                        je   _noKey                               ; Jump if any key was pressed
 
-                  mov  ah, 01h                       ; leer tecla (espera si no hay)
-                  int  21h                           ; AL = carácter leído
-                  cmp  al, 'A'
-                  je   store_char
-                  cmp  al, 'C'
-                  je   store_char
-                  jmp  no_key
+                        mov  ah, 01h                               ; Read the character pressed
+                        int  21h                                   ; Return the readed character in AL register
+                        cmp  al, 'A'
+                        je   _storeChar
+                        cmp  al, 'C'
+                        je   _storeChar
+                        jmp  _noKey
 
-    store_char:   
-                  mov  [charBuffer], al
-                  mov  byte ptr selectedMsg+6, al
-                  ret                                ; vuelve al bucle principal
+    _storeChar:        
+                        mov  [BUFFER_charSelected], al             ; Save in Buffer the value of al
+                        mov  byte ptr var_selectedMessage+6, al    ; Edit the position 6 of the message (the space between '')
+                        ret                                        ; Return to the caller method (Who called for CheckKey routine?)
 
-    no_key:       
-                  cmp  al, 0Dh                       ; ¿Enter?
-                  jne  exit_key
+    _noKey:            
+                        cmp  al, 0Dh                               ; Enter input was pressed?
+                        jne  _exitKey                             ; Wasn't pressed, so, exit of the method
 
-    ; Si llegamos aquí, se pulsó Enter:
-                  mov  al, [charBuffer]
-                  cmp  al, 'A'
-                  je   do_about_a
-                  cmp  al, 'C'
-                  je   valid_exit
+                        mov  al, [BUFFER_charSelected]             ; ENTER pressed, Buffer value to al
+                        cmp  al, 'A'                               ; It's 'A'? Then Jump
+                        je   _doAboutA
+                        cmp  al, 'C'                               ; It's 'B'? Then Jump
+                        je   _doAboutC
 
-    ; cualquier otra, repintar menú
-                  call ClearScreen
-                  jmp  welcome_loop
+                        call ClearScreen                           ; If It's any other, refresh the screen
+                        jmp  Welcome_Loop
 
-    do_about_a:   
-                  call ClearScreen
-                  call ShowAbout
+    _doAboutA:        
+                        call ClearScreen
+                        call ShowAbout                             ; EXTERNAL PROCEDURE -> cabout.asm
 
-    valid_exit:   
-                  call ClearScreen
-                  call SelectBase
-                ;   jmp  welcome_loop ; no sé si debe saltar
-    exit_key:     
-                  ret
+    _doAboutC:        
+                        call ClearScreen
+                        call SelectBase                            ; EXTERNAL PROCEDURE -> cselect.asm
+    _exitKey:          
+                        ret
 CheckKey ENDP
 
+
+    ; Erase the content of the screen
 ClearScreen PROC
-                  mov  ah,0
-                  mov  al,3
-                  int  10h
-                  ret
+                        mov  ah,0
+                        mov  al,3
+                        int  10h
+                        ret
 ClearScreen ENDP
 
-end main
+END MAIN
