@@ -4,19 +4,24 @@
 EXTERN main:NEAR ; Procedure to return to the main module cinit
 
 .DATA
-    var_aboutLine1  DB "================================================",13,10,"$"
-    var_aboutLine2  DB "|      ____            _        _              |",13,10,"$"
-    var_aboutLine3  DB "|     |  _ \ ___  __ _| |_ __ _| | ___  ___    |",13,10,"$"
-    var_aboutLine4  DB "|     | |_) / _ \/ _` | __/ _` | |/ _ \/ __|   |",13,10,"$"
-    var_aboutLine5  DB "|     |  _ <  __/ (_| | || (_| | |  __/\__ \   |",13,10,"$"
-    var_aboutLine6  DB "|     |_| \_\___|\__,_|\__\__,_|_|\___||___/   |",13,10,"$"
-    var_aboutLine7  DB "|                                              |",13,10,"$"
-    var_aboutLine8  DB "|         BASE-N UNIT CONVERTER v1.0           |",13,10,"$"
-    var_aboutLine9  DB "|                                              |",13,10,"$"
-    var_aboutLine10 DB "|  Developed by: Adolfo Alejandro Arenas Ramos |",13,10,"$"
-    var_aboutLine11 DB "|  Developed by: Gabriel Camilo Pinto Andrade  |",13,10,"$"
-    var_aboutLine12 DB "|Contact:adolfoalejandroarenasramos@outlook.com|",13,10,"$"
-    var_aboutLine13 DB "================================================",13,10,"$"
+
+    var_aboutLine1  DB "  /######  / #######   /########  /##   /##  /########",13,10,"$"
+    var_aboutLine2  DB " /##__  ## | ##__  ## / ##__  ## | ##  | ## |__  ##__/",13,10,"$"
+    var_aboutLine3  DB "| ##  \ ## | ##  \ ## | ##  \ ## | ##  | ##    | ##   ",13,10,"$"
+    var_aboutLine4  DB "| ######## | #######  | ##  | ## | ##  | ##    | ##   ",13,10,"$"
+    var_aboutLine5  DB "| ##__  ## | ##__  ## | ##  | ## | ##  | ##    | ##   ",13,10,"$"
+    var_aboutLine6  DB "| ##  | ## | ##  \ ## | ##  | ## | ##  | ##    | ##   ",13,10,"$"
+    var_aboutLine7  DB "| ##  | ## | #######  |  ####### |  ######/    | ##   ",13,10,"$"
+    var_aboutLine8  DB "|__/  |__/ |_______/  \_______/  \______/      |__/   ",13,10,"$"
+    var_aboutLine9  DB 13,10,"$"                                                             ; New Line
+    var_aboutLine10 DB "================================================",13,10,"$"
+    var_aboutLine11 DB "|           Base-N Magic Explainer!            |",13,10,"$"
+    var_aboutLine12 DB "|               Version: 1.0.0                 |",13,10,"$"
+    var_aboutLine13 DB "|                                              |",13,10,"$"
+    var_aboutLine14 DB "|  Developed by: Adolfo Alejandro Arenas Ramos |",13,10,"$"
+    var_aboutLine15 DB "|  Developed by: Gabriel Camilo Pinto Andrade  |",13,10,"$"
+    var_aboutLine16 DB "|Contact:adolfoalejandroarenasramos@outlook.com|",13,10,"$"
+    var_aboutLine17 DB "================================================",13,10,"$"
     var_pressAny    DB ">> Press any key to return to the main menu <<",13,10,"$"
 
 .CODE
@@ -32,6 +37,7 @@ ShowAbout PROC NEAR PUBLIC
                  int  21h
 
                  call ClearScreen            ; Clear the screen again
+                 CALL MAIN                   ; EXTERNAL PROCEDURE -> cinit.asm
                  ret
 ShowAbout ENDP
 
@@ -39,6 +45,8 @@ ShowAbout ENDP
 
     ; Print the content of the variables
 PrintContent PROC
+                 LEA  DX, var_aboutLine9
+                 call PrintString
                  lea  dx, var_aboutLine1
                  call PrintString
                  lea  dx, var_aboutLine2
@@ -64,6 +72,14 @@ PrintContent PROC
                  lea  dx, var_aboutLine12
                  call PrintString
                  lea  dx, var_aboutLine13
+                 call PrintString
+                 lea  dx, var_aboutLine14
+                 call PrintString
+                 lea  dx, var_aboutLine15
+                 call PrintString
+                 lea  dx, var_aboutLine16
+                 call PrintString
+                 lea  dx, var_aboutLine17
                  call PrintString
                  lea  dx, var_pressAny
                  call PrintString
