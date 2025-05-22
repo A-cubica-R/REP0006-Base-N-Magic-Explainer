@@ -3,7 +3,7 @@
 .STACK 100h
 
 EXTERN ShowAbout:NEAR
-; EXTERN SelectBase:NEAR
+EXTERN SelectBase:NEAR
 ; PUBLIC main
 
 .DATA
@@ -38,9 +38,8 @@ EXTERN ShowAbout:NEAR
     var_initMenu1       DB "  ####################################  ",13,10,"$"
     var_initMenu2       DB "  #  Enter an option (ONLY MAYUS)    #  ",13,10,"$"
     var_initMenu3       DB "  #   [A] ABOUT                      #  ",13,10,"$"
-    var_initMenu4       DB "  #   [B] CONVERT                    #  ",13,10,"$"
-    var_initMenu5       DB "  #   [C] EXIT                       #  ",13,10,"$"
-    var_initMenu6       DB "  ####################################  ",13,10,"$"
+    var_initMenu4       DB "  #   [C] CONVERT                    #  ",13,10,"$"
+    var_initMenu5       DB "  ####################################  ",13,10,"$"
 
     ; Message for selected char
     var_selectedMessage DB "Char ' ' selected, press ENTER to continue:",13,10,"$"
@@ -69,12 +68,6 @@ Welcome_loop PROC
                         CALL ShowPresentationOFF
                         JMP  welcome_loop
 Welcome_loop ENDP
-
-    ; End the execution of the program and return to DOS
-Cinit_END PROC
-                        MOV  AH, 4Ch
-                        INT  21H
-Cinit_END ENDP
 
     ; ======= SECONDARY PROCEDURES =======
 
@@ -171,8 +164,6 @@ PrintMenu PROC
                         CALL PrintString
                         LEA  DX, var_initMenu5
                         CALL PrintString
-                        LEA  DX, var_initMenu6
-                        CALL PrintString
                         LEA  DX, var_selectedMessage
                         CALL PrintString
                         LEA  DX, var_inputMessage
@@ -211,8 +202,6 @@ CheckKey PROC
                         INT  21h                                   ; Return the readed character in AL register
                         CMP  AL, 'A'
                         JE   _storeChar
-                        CMP  AL, 'B'
-                        JE   _storeChar
                         CMP  AL, 'C'
                         JE   _storeChar
                         JMP  _noKey
@@ -229,8 +218,6 @@ CheckKey PROC
                         MOV  AL, [BUFFER_charSelected]             ; ENTER pressed, Buffer value to al
                         CMP  AL, 'A'                               ; It's 'A'? Then Jump
                         JE   _doAboutA
-                        CMP  AL, 'B'                               ; It's 'B'? Then Jump
-                        JE   _doAboutB
                         CMP  AL, 'C'                               ; It's 'B'? Then Jump
                         JE   _doAboutC
 
@@ -241,11 +228,9 @@ CheckKey PROC
                         CALL ClearScreen
                         CALL ShowAbout                             ; EXTERNAL PROCEDURE -> cabout.asm
 
-    _doAboutB:          
-                        CALL ClearScreen
-                    ;   CALL SelectBase ; EXTERNAL PROCEDURE -> cselect.asm
     _doAboutC:          
-                        CALL Cinit_END
+                        CALL ClearScreen
+                        CALL SelectBase                            ; EXTERNAL PROCEDURE -> cselect.asm
     _exitKey:           
                         RET
 CheckKey ENDP
