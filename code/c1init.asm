@@ -4,7 +4,6 @@
 
 EXTERN MAIN_SHOW:NEAR
 EXTERN MAIN_CHOSE:NEAR
-PUBLIC MAIN
 
 .DATA
 
@@ -65,6 +64,7 @@ MAIN ENDP
 
     ; Show the title types and repeat
 Welcome_loop PROC
+                        CALL ClearScreen
                         CALL ShowPresentationON
                         CALL ShowPresentationOFF
                         JMP  welcome_loop
@@ -72,6 +72,7 @@ Welcome_loop ENDP
 
     ; End the execution of the program and return to DOS
 Cinit_END PROC
+                        CALL ClearScreen
                         MOV  AH, 4Ch
                         INT  21H
 Cinit_END ENDP
@@ -240,10 +241,14 @@ CheckKey PROC
     _doAboutA:          
                         CALL ClearScreen
                         CALL MAIN_SHOW                             ; EXTERNAL PROCEDURE -> cabout.asm
+                        JMP  Welcome_Loop
 
     _doAboutB:          
                         CALL ClearScreen
+                        PUSH DS
                         CALL MAIN_CHOSE                            ; EXTERNAL PROCEDURE -> c3chose.asm
+                        POP  DS
+                        JMP  Welcome_Loop
     _doAboutC:          
                         CALL Cinit_END
     _exitKey:           

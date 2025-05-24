@@ -1,7 +1,5 @@
 .MODEL SMALL
 
-EXTERN main:NEAR ; Procedure to return to the main module cinit
-
 .DATA
 
     var_aboutLine1  DB "  /######  / #######   /########  /##   /##  /########",13,10,"$"
@@ -36,7 +34,6 @@ MAIN_SHOW PROC NEAR PUBLIC
                  INT  21h
 
                  CALL ClearScreen            ; Clear the screen again
-                 CALL MAIN                   ; EXTERNAL PROCEDURE -> cinit.asm
                  RET
 MAIN_SHOW ENDP
 
