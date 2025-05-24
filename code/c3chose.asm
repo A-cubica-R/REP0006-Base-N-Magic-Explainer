@@ -316,8 +316,6 @@ PrintSelection ENDP
 
 
 ReceiveConfirm PROC
-                             CALL ClearBUFFERTemporalTinny                 ; Clear the buffer for confirmation input
-
                              LEA  DX, BUFFER_TemporalTinny
                              mov  AH, 0Ah
                              int  21h
@@ -476,65 +474,5 @@ ClearScreen PROC
                              INT  10h
                              RET
 ClearScreen ENDP
-
-ClearBUFFERTemporalLarge PROC
-                             MOV  DI, OFFSET BUFFER_TemporalLarge          ; point to the Buffer direction
-                             INC  DI                                       ; skip the first byte (max length)
-                             MOV  CX, 39                                   ; Number of bytes to clear (40)
-                             MOV  AL, 0                                    ; Value to overwrite the buffer (0)
-                             REP  STOSB                                    ; Fill the buffer with the value in AL
-                             RET
-ClearBUFFERTemporalLarge ENDP
-
-ClearBUFFERTemporalTinny PROC
-                             MOV  DI, OFFSET BUFFER_TemporalTinny          ; point to the Buffer direction
-                             INC  DI                                       ; Skip the first byte (max length)
-                             MOV  CX, 4                                    ; Number of bytes to clear (40)
-                             MOV  AL, 0                                    ; Value to overwrite the buffer (0)
-                             REP  STOSB                                    ; Fill the buffer with the value in AL
-                             RET
-ClearBUFFERTemporalTinny ENDP
-
-    ; ##########################################
-    ; GARBAGE CODE
-    ; ##########################################
-
-    ; Entrada: valor en AX
-    ; Salida: imprime el número en base 10
-
-PrintAXDecimal PROC
-                             PUSH AX
-                             PUSH BX
-                             PUSH CX
-                             PUSH DX
-                             PUSH SI
-
-                             MOV  CX, 0                                    ; Contador de dígitos
-                             LEA  SI, BUFFER_TemporalLarge + 20            ; Empezamos desde el final del buffer
-                             MOV  BX, 10                                   ; Divisor = 10
-
-    _ConvLoop1:              
-                             XOR  DX, DX                                   ; limpiar DX antes de DIV
-                             DIV  BX                                       ; AX / 10, residuo en DL
-                             ADD  DL, '0'                                  ; convertir a ASCII
-                             DEC  SI
-                             MOV  [SI], DL
-                             INC  CX
-                             CMP  AX, 0
-                             JNZ  _ConvLoop1
-
-    ; Imprimir el número
-                             MOV  DX, SI
-                             MOV  AH, 09h
-                             INT  21h
-
-                             POP  SI
-                             POP  DX
-                             POP  CX
-                             POP  BX
-                             POP  AX
-                             RET
-PrintAXDecimal ENDP
-
 
 END MAIN_CHOSE
