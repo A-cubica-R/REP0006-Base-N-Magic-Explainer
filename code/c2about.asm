@@ -1,5 +1,4 @@
 .MODEL SMALL
-.STACK 100h
 
 EXTERN main:NEAR ; Procedure to return to the main module cinit
 
@@ -29,7 +28,7 @@ EXTERN main:NEAR ; Procedure to return to the main module cinit
     ; ======= PRINCIPAL PROCEDURES =======
 
     ; Print the ABOUT section for the program
-ShowAbout PROC NEAR PUBLIC
+MAIN_SHOW PROC NEAR PUBLIC
                  CALL ClearScreen            ; Clear the screen
                  CALL PrintContent           ;  Print the content on the screen
 
@@ -39,7 +38,7 @@ ShowAbout PROC NEAR PUBLIC
                  CALL ClearScreen            ; Clear the screen again
                  CALL MAIN                   ; EXTERNAL PROCEDURE -> cinit.asm
                  RET
-ShowAbout ENDP
+MAIN_SHOW ENDP
 
     ; ======= AUX PROCEDURES =======
 
@@ -101,4 +100,4 @@ ClearScreen PROC
                  RET
 ClearScreen ENDP
 
-END ShowAbout
+END MAIN_SHOW

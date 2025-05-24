@@ -9,7 +9,7 @@ EXTERN BToOCT:NEAR, BToDEC:NEAR, BToHEX:NEAR, BToBin:NEAR
 .DATA
 	
     ; Public buffer
-    PUBLIC bufResult
+                   PUBLIC bufResult
     
     ; Messages
     msgWelcome     DB     0Dh, 0Ah, 'Welcome, select the source base:', '$'

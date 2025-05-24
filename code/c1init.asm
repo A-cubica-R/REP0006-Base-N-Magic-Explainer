@@ -2,9 +2,9 @@
 
 .STACK 100h
 
-EXTERN ShowAbout:NEAR
-; EXTERN SelectBase:NEAR
-; PUBLIC main
+EXTERN MAIN_SHOW:NEAR
+EXTERN MAIN_CHOSE:NEAR
+PUBLIC MAIN
 
 .DATA
 
@@ -239,11 +239,11 @@ CheckKey PROC
 
     _doAboutA:          
                         CALL ClearScreen
-                        CALL ShowAbout                             ; EXTERNAL PROCEDURE -> cabout.asm
+                        CALL MAIN_SHOW                             ; EXTERNAL PROCEDURE -> cabout.asm
 
     _doAboutB:          
                         CALL ClearScreen
-    ;   CALL SelectBase ; EXTERNAL PROCEDURE -> cselect.asm
+                        CALL MAIN_CHOSE                            ; EXTERNAL PROCEDURE -> c3chose.asm
     _doAboutC:          
                         CALL Cinit_END
     _exitKey:           
