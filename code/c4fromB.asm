@@ -1,14 +1,13 @@
 .MODEL small
 
 EXTERN BUFFER_IntputStr:NEAR
-EXTERN BUFFER_OutputStr:NEAR
 
 .DATA
 
     ; Util printing
     var_newLine        DB 13, 10, "$"
     ; Messages
-    var_BmessageInit   DB "Initialized conversion", 13, 10, "$"
+    var_BmessageInit   DB "Initialized conversion: BINARY", 13, 10, "$"
     var_BmessageSeeNum DB "In Binary your number is: ", "$"
     var_BmessageSeeDec DB "In decimal your number is: ", "$"
     var_BmessageSeeOct DB "In Octal your number is: ", "$"
@@ -34,7 +33,7 @@ MAIN_FROMB ENDP
 
     ; Initialize the conversion
 InitializeConvertionB PROC
-                          CALL InputToBinary
+                          CALL InputToNumB
 
                           LEA  DX, var_BmessageInit
                           CALL PrintString               ; Print initialization message
@@ -52,7 +51,7 @@ InitializeConvertionB PROC
 InitializeConvertionB ENDP
 
     ; Convert the ASCII string to a number in binary way
-InputToBinary PROC
+InputToNumB PROC
 
                           PUSH AX
                           PUSH BX
@@ -97,7 +96,7 @@ InputToBinary PROC
                           POP  BX
                           POP  AX
                           RET
-InputToBinary ENDP
+InputToNumB ENDP
 
     ; ======= CONV PROCEDURES =======
     ; Here the procedures that will be used to convert the num to a base-n

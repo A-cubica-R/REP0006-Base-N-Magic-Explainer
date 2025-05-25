@@ -2,10 +2,10 @@
 
 ; Public buffers for external procedures
 PUBLIC BUFFER_IntputStr
-PUBLIC BUFFER_OutputStr
    
    ; External procedures
 EXTERN MAIN_FROMB:NEAR
+EXTERN MAIN_FROMO:NEAR
 
 .DATA
 
@@ -40,7 +40,6 @@ EXTERN MAIN_FROMB:NEAR
     BUFFER_IntBase         DB 2, ?, 2 DUP(?)
     BUFFER_OutBase         DB 2, ?, 2 DUP(?)
     BUFFER_IntputStr       DB 11, ?, 11 DUP("$")
-    BUFFER_OutputStr       DB 40, ?, 40 DUP("$")
 
     ;Temporals for other uses
     BUFFER_TemporalLarge   DB 40, ?, 40 DUP(?)
@@ -209,6 +208,7 @@ DoConvertion PROC
                         CALL MAIN_FROMB
                         JMP  _FinishDoConvertion
     _fromOct:           
+                        CALL MAIN_FROMO
                         JMP  _FinishDoConvertion
     _fromDec:           
                         JMP  _FinishDoConvertion
