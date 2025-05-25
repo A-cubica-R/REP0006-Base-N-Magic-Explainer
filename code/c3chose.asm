@@ -6,6 +6,8 @@ PUBLIC BUFFER_IntputStr
    ; External procedures
 EXTERN MAIN_FROMB:NEAR
 EXTERN MAIN_FROMO:NEAR
+EXTERN MAIN_FROMD:NEAR
+EXTERN MAIN_FROMH:NEAR
 
 .DATA
 
@@ -211,8 +213,10 @@ DoConvertion PROC
                         CALL MAIN_FROMO
                         JMP  _FinishDoConvertion
     _fromDec:           
+                        CALL MAIN_FROMD
                         JMP  _FinishDoConvertion
     _fromHex:           
+                        CALL MAIN_FROMH
                         JMP  _FinishDoConvertion
     _FinishDoConvertion:
                         RET
