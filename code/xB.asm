@@ -58,7 +58,7 @@ StrBaseToNum_xplnb ENDP
 
     ; Explanation for Binary to Binary
 BxplnB PROC
-        
+                       CALL SUBMAIN_BB
                        RET
 BxplnB ENDP
 
@@ -76,7 +76,7 @@ BxplnD ENDP
 
     ; Explanation for Binary to Hexadecimal
 BxplnH PROC
-        
+                       CALL SUBMAIN_BH
                        RET
 BxplnH ENDP
 
