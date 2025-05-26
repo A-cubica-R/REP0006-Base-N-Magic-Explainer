@@ -1,0 +1,14 @@
+.MODEL small
+
+EXTERN BUFFER_IntputStr:NEAR
+
+.DATA
+
+.CODE
+
+    ; ======= MAIN PROCEDURE =======
+SUBMAIN_HD PROC NEAR PUBLIC
+                               RET
+SUBMAIN_HD ENDP
+
+END SUBMAIN_HD

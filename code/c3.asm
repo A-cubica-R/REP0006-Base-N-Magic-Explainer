@@ -2,6 +2,7 @@
 
 ; Public buffers for external procedures
 PUBLIC BUFFER_IntputStr
+PUBLIC BUFFER_OutBase
    
    ; External procedures
 EXTERN MAIN_FROMB:NEAR
