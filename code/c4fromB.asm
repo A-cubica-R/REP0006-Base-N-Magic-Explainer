@@ -60,24 +60,28 @@ InputToNumB PROC
                           PUSH SI
                           PUSH DI
 
-    ; Inicializar
-                          XOR  AX, AX                    ; AX = 0 → acumulador parcial
+    ; Inicializar usando DX:AX como registro de 32 bits
+                          XOR  AX, AX                    ; AX = 0 → parte baja del acumulador
+                          XOR  DX, DX                    ; DX = 0 → parte alta del acumulador
                           LEA  SI, BUFFER_IntputStr
                           MOV  CL, [SI + 1]              ; CL = número de caracteres introducidos
                           ADD  SI, 2                     ; SI apunta al primer carácter
-
-                          XOR  DI, DI                    ; DI = 0 → índice para BUFFER_IntputNum[DI]
 
     _ConvertLoop:         
                           CMP  CL, 0
                           JE   _StoreResult              ; Si ya no quedan caracteres, terminar
 
                           MOV  BL, [SI]                  ; BL = siguiente carácter
-                          SHL  AX, 1                     ; AX = AX * 2 (desplazar a la izquierda)
+                          
+    ; Desplazar DX:AX una posición a la izquierda (multiplicar por 2)
+                          SHL  AX, 1                     ; Desplazar parte baja
+                          RCL  DX, 1                     ; Rotar parte alta con carry
 
                           CMP  BL, '1'
                           JNE  _SkipAdd
-                          INC  AX                        ; Si el bit era 1, sumamos 1
+                          INC  AX                        ; Si el bit era 1, sumamos 1 a parte baja
+                          JNC  _SkipAdd                  ; Si no hay overflow, continuar
+                          INC  DX                        ; Si hay overflow, incrementar parte alta
 
     _SkipAdd:             
                           INC  SI                        ; siguiente carácter
@@ -85,9 +89,10 @@ InputToNumB PROC
                           JMP  _ConvertLoop
 
     _StoreResult:         
-    ; Guardamos el resultado en BUFFER_IntputNum[0..3] (solo el primer DWORD)
+    ; Guardamos el resultado de 32 bits en BUFFER_IntputNum
                           LEA  DI, BUFFER_IntputNum
-                          MOV  [DI], AX
+                          MOV  [DI], AX                  ; Guardar parte baja
+                          MOV  [DI+2], DX                ; Guardar parte alta
 
                           POP  DI
                           POP  SI
@@ -147,44 +152,84 @@ BPrintNumBinary PROC
                           PUSH BX
                           PUSH CX
                           PUSH DX
+                          PUSH SI
+                          PUSH DI
 
+    ; Cargar el número de 32 bits desde BUFFER_IntputNum
                           LEA  SI, BUFFER_IntputNum
-                          MOV  AX, [SI]
+                          MOV  AX, [SI]                  ; AX = parte baja
+                          MOV  DX, [SI+2]                ; DX = parte alta
+                          XOR  DI, DI                    ; Flag: primer '1' ya impreso
 
-                          MOV  CX, 16                    ; 16 bits in AX
-                          MOV  BX, AX                    ; Work with BX
-                          MOV  SI, 0                     ; Flag: first '1' already printed
+    ; Verificar si el número es 0
+                          CMP  DX, 0
+                          JNE  _StartWithHigh
+                          CMP  AX, 0
+                          JNE  _StartWithLow
+                          MOV  DL, '0'
+                          MOV  AH, 02h
+                          INT  21h
+                          JMP  _DoneBinary
 
-    _NextBit:             
-                          SHL  BX, 1                     ; Move most significant bit to CF
-                          JC   _Print1
-                          CMP  SI, 1
-                          JE   _Print0                   ; If printing started, show 0
-                          LOOP _NextBit                  ; Otherwise, skip leading zeros
-                          JMP  _Finish
-
-    _Print1:              
+    _StartWithHigh:       
+    ; Imprimir parte alta (DX) primero
+                          MOV  CX, 16                    ; 16 bits en DX
+                          MOV  BX, DX                    ; Trabajar con BX
+    _NextBitHigh:         
+                          SHL  BX, 1                     ; Shift left, MSB va a carry
+                          JC   _Print1High               ; Si carry está activo, imprimir '1'
+                          
+    ; Verificar si debemos imprimir ceros a la izquierda
+                          CMP  DI, 1
+                          JE   _Print0High               ; Si ya imprimimos un '1', imprimir '0'
+                          JMP  _ContinueHigh             ; Saltar ceros iniciales
+                          
+    _Print1High:          
                           MOV  DL, '1'
                           MOV  AH, 02h
                           INT  21h
-                          MOV  SI, 1
-                          LOOP _NextBit
-                          JMP  _Finish
+                          MOV  DI, 1                     ; Activar flag: primer '1' impreso
+                          JMP  _ContinueHigh
 
-    _Print0:              
+    _Print0High:          
                           MOV  DL, '0'
                           MOV  AH, 02h
                           INT  21h
-                          LOOP _NextBit
 
-    _Finish:              
-                          CMP  SI, 0
-                          JNE  _Done                     ; If no bit was 1 (AX was 0), print a single '0'
+    _ContinueHigh:        
+                          LOOP _NextBitHigh
+                          
+    _StartWithLow:        
+    ; Imprimir parte baja (AX)
+                          MOV  CX, 16                    ; 16 bits en AX
+                          MOV  BX, AX                    ; Trabajar con BX
+    _NextBitLow:          
+                          SHL  BX, 1                     ; Shift left, MSB va a carry
+                          JC   _Print1Low                ; Si carry está activo, imprimir '1'
+                          
+    ; Si ya imprimimos algún bit de la parte alta, siempre imprimir
+                          CMP  DI, 1
+                          JE   _Print0Low                ; Imprimir '0'
+                          JMP  _ContinueLow              ; Saltar ceros iniciales
+                          
+    _Print1Low:           
+                          MOV  DL, '1'
+                          MOV  AH, 02h
+                          INT  21h
+                          MOV  DI, 1                     ; Activar flag: primer '1' impreso
+                          JMP  _ContinueLow
 
+    _Print0Low:           
                           MOV  DL, '0'
                           MOV  AH, 02h
                           INT  21h
-    _Done:                
+
+    _ContinueLow:         
+                          LOOP _NextBitLow
+
+    _DoneBinary:          
+                          POP  DI
+                          POP  SI
                           POP  DX
                           POP  CX
                           POP  BX
@@ -204,40 +249,65 @@ BPrintNumDecimal PROC
                           PUSH CX
                           PUSH DX
                           PUSH SI
+                          PUSH DI
 
-    ; Cargar el número desde BUFFER_IntputNum (DWORD pero usamos solo los primeros 16 bits)
+    ; Cargar el número de 32 bits desde BUFFER_IntputNum
                           LEA  SI, BUFFER_IntputNum
-                          MOV  AX, [SI]                  ; AX = número a imprimir
-                          XOR  CX, CX                    ; CX = contador de dígitos
-                          MOV  BX, 10                    ; base decimal
+                          MOV  AX, [SI]                  ; AX = parte baja
+                          MOV  DX, [SI+2]                ; DX = parte alta
 
     ; Si el número es 0, imprimimos '0' directamente
+                          CMP  DX, 0
+                          JNE  _ConvertLoop1
                           CMP  AX, 0
                           JNE  _ConvertLoop1
                           MOV  DL, '0'
                           CALL _PrintChar
-                          JMP  _End
+                          JMP  _EndDecimal
 
     _ConvertLoop1:        
-    ; Convertir número a ASCII decimal (reversa)
+    ; Convertir número de 32 bits a ASCII decimal (reversa)
     ; Guardamos los dígitos en la pila (usamos CX como contador)
-                          XOR  CX, CX
+                          XOR  CX, CX                    ; Contador de dígitos
     _ConvertLoopContinue: 
-                          XOR  DX, DX                    ; limpiar DX para DIV
-                          DIV  BX                        ; AX / 10, resto en DL
-                          ADD  DL, '0'                   ; convertir a ASCII
-                          PUSH DX                        ; guardar el dígito
-                          INC  CX                        ; contar cuántos dígitos
+    ; Verificar si DX:AX es 0
+                          CMP  DX, 0
+                          JNE  _DivideBy10
                           CMP  AX, 0
-                          JNE  _ConvertLoopContinue
+                          JE   _PrintDigits
+                          
+    _DivideBy10:          
+    ; División de 32 bits por 10: DX:AX / 10
+                          PUSH AX                        ; Guardar parte baja original
+                          MOV  AX, DX                    ; Mover parte alta a AX
+                          XOR  DX, DX                    ; Limpiar DX para división
+                          MOV  BX, 10                    ; Divisor
+                          DIV  BX                        ; AX = parte_alta/10, DX = remainder
+                          MOV  DI, AX                    ; DI = nueva parte alta
+                          MOV  AX, DX                    ; AX = remainder de división anterior
+                          MOV  DX, AX                    ; DX = remainder
+                          POP  AX                        ; Recuperar parte baja original
+                          DIV  BX                        ; DX:AX / 10, AX = resultado, DX = remainder final
+                          PUSH DI                        ; Guardar nueva parte alta
+                          MOV  BX, DX                    ; BX = remainder (dígito)
+                          POP  DX                        ; DX = nueva parte alta
+                          
+                          ADD  BL, '0'                   ; Convertir dígito a ASCII
+                          PUSH BX                        ; Guardar dígito en pila
+                          INC  CX                        ; Incrementar contador de dígitos
+                          JMP  _ConvertLoopContinue
 
     _PrintDigits:         
     ; Imprimir los dígitos en orden correcto
+                          CMP  CX, 0
+                          JE   _EndDecimal
                           POP  DX
                           CALL _PrintChar
-                          LOOP _PrintDigits
+                          DEC  CX
+                          JMP  _PrintDigits
 
-    _End:                 
+    _EndDecimal:          
+                          POP  DI
                           POP  SI
                           POP  DX
                           POP  CX
