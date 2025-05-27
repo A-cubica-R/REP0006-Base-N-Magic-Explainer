@@ -1,6 +1,7 @@
 .MODEL small
 
 EXTERN BUFFER_IntputStr:NEAR
+EXTERN MAIN_XPLN_O:NEAR
 
 .DATA
 
@@ -13,8 +14,11 @@ EXTERN BUFFER_IntputStr:NEAR
     var_OmessageSeeOct DB "In Octal your number is: ", "$"
     var_OmessageSeeHex DB "In Hexadecimal your number is: ", "$"
     var_OmessageFint   DB "Finalized conversion", 13, 10, "$"
+    var_messageInputErrorO1 DB "Input error, please try again", 13, 10, "$"
+    var_Oexplanation        DB "Wanna see the explanation?(Y\N)", 13, 10, "$"
     ; Buffers
     BUFFER_OIntputNum   DD 11 DUP(0)
+    BUFFER_TemporalTinnyO   DB 2, ?, 2 DUP(?)
     ; Debugging vars
     var_TestO1         DB "OOO Break point 1 OOOO", 13, 10, "$"
     var_TestO2         DB "OOO Break point 2 OOOO", 13, 10, "$"
@@ -46,7 +50,12 @@ InitializeConvertionO PROC
                           CALL  PrintNewLine
                           CALL  PrintNewLine
                           LEA   DX, var_OmessageFint
-                          CALL  PrintString_wait
+                          CALL  PrintString
+
+                          LEA  DX, var_Oexplanation
+                          CALL PrintString
+                          CALL OExplanationProceed
+                          RET
                           RET
 InitializeConvertionO ENDP
 
@@ -130,9 +139,43 @@ InputToNumO ENDP
 
     ; ======= CONV PROCEDURES =======
     ; Here the procedures that will be used to convert the num to a base-n
+OExplanationProceed PROC
+
+    _Initialization:      
+                          CALL ReceiveConfirmO
+                          CMP  AL, 'Y'
+                          JE   _Proceed
+                          CMP  AL, 'y'
+                          JE   _Proceed
+                          CMP  AL, 'N'
+                          JE   _Finish
+                          CMP  AL, 'n'
+                          JE   _Finish
+
+                          LEA  DX, var_messageInputErrorO1
+                          CALL PrintString_wait
+                          JMP  _Initialization
+
+    _Proceed:             
+                          CALL MAIN_XPLN_O
+                          RET
+
+    _Finish:              
+                          RET
+OExplanationProceed ENDP
 
     ; ======= AUXX PROCEDURES =======
     ; Here the procedures that will work like a auxiliar process
+
+ReceiveConfirmO PROC
+                          LEA  DX, BUFFER_TemporalTinnyO
+                          mov  AH, 0Ah
+                          int  21h
+
+    ; Read the first character of the confirmation input
+                          MOV  AL, BYTE PTR [BUFFER_TemporalTinnyO+2]
+                          RET
+ReceiveConfirmO ENDP
 
     ; Print a string to the screen from DX register
 PrintString PROC

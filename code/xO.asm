@@ -1,12 +1,14 @@
 .MODEL small
 
-EXTERN BUFFER_IntputStr:NEAR
 EXTERN BUFFER_OutBase:NEAR
-EXTERN SUBMAIN_BD:NEAR
+EXTERN SUBMAIN_OB:NEAR
+EXTERN SUBMAIN_OO:NEAR
+EXTERN SUBMAIN_OD:NEAR
+EXTERN SUBMAIN_OH:NEAR
 
 .DATA
     ; Util printing
-    var_newLine    DB 13, 10, "$"
+    var_newLine DB 13, 10, "$"
 .CODE
 MAIN_XPLN_O PROC NEAR PUBLIC
                        CALL ClearScreen
@@ -56,24 +58,25 @@ StrBaseToNum_xplno ENDP
 
     ; Explanation for Binary to Binary
 OxplnB PROC
-        
+                       CALL SUBMAIN_OB
                        RET
 OxplnB ENDP
 
     ; Explanation for Binary to Octal
 OxplnO PROC
-        
+                       CALL SUBMAIN_OO
                        RET
 OxplnO ENDP
 
     ; Explanation for Binary to Decimal
 OxplnD PROC
+                       CALL SUBMAIN_OD
                        RET
 OxplnD ENDP
 
     ; Explanation for Binary to Hexadecimal
 OxplnH PROC
-        
+                       CALL SUBMAIN_OH
                        RET
 OxplnH ENDP
 
