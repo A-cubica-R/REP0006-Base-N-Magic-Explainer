@@ -18,6 +18,10 @@ This MASM-based program allows you to:
 - At any step, the program allows you to return to **Step 1**.
 - At any step, the program allows you to return to the **previous step**.
 
+### Functionality Example
+
+![Ejemplo de funcionamiento de Base-N Magic Explainer](./release/bnme_example.gif)
+
 ### Supported Bases
 
 - **Base-2** (Binary)
