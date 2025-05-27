@@ -1,7 +1,10 @@
 .MODEL small
 
-EXTERN BUFFER_IntputStr:NEAR
 EXTERN BUFFER_OutBase:NEAR
+EXTERN SUBMAIN_HB:NEAR
+EXTERN SUBMAIN_HO:NEAR
+EXTERN SUBMAIN_HD:NEAR
+EXTERN SUBMAIN_HH:NEAR
 
 .DATA
     var_newLine DB 13, 10, "$"
@@ -54,21 +57,25 @@ StrBaseToNum_xplnh ENDP
 
     ; Explanation for Binary to Binary
 HxplnB PROC
+                       CALL SUBMAIN_HB
                        RET
 HxplnB ENDP
 
     ; Explanation for Binary to Octal
 HxplnO PROC
+                       CALL SUBMAIN_HO
                        RET
 HxplnO ENDP
 
     ; Explanation for Binary to Decimal
 HxplnD PROC
+                       CALL SUBMAIN_HD
                        RET
 HxplnD ENDP
 
     ; Explanation for Binary to Hexadecimal
 HxplnH PROC
+                       CALL SUBMAIN_HH
                        RET
 HxplnH ENDP
 

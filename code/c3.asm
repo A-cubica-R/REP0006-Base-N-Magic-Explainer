@@ -18,7 +18,7 @@ EXTERN MAIN_FROMH:NEAR
     var_messageWelcome     DB "Great!, please define the process", 13, 10, "$"
     var_messageFromBase    DB "Select the base to convert from:", 13, 10, "$"
     var_messageToBase      DB "Select the target base:", 13, 10, "$"
-    var_messageNumber      DB "Enter your number to convert:", 13, 10, "$"
+    var_messageNumber      DB "Enter your number to convert [ONLY 9 DIGITS]:", 13, 10, "$"
     var_messageConfirm0    DB "You have selected from ", "$"
     var_messageConfirm1    DB " to ", "$"
     var_messageConfirm2    DB "For this number: ", "$"
