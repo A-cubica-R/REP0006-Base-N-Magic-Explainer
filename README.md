@@ -40,12 +40,6 @@ This MASM-based program allows you to:
 
 ---
 
-## Screenshots
-
-> Add screenshots or diagrams here to illustrate the program's functionality.
-
----
-
 ## How to Run
 
 ### Prerequisites
